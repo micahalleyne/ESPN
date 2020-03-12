@@ -1,5 +1,6 @@
 class MessagesController < ApplicationController
-   before_action :find_message, only: [:show, :edit, :update, :destroy]
+    before_action :authenticate_user!, except: [:index, :show]
+    before_action :find_message, only: [:show, :edit, :update, :destroy]
    
     def index
         @messages = Message.all.order("created_at DESC")
@@ -22,16 +23,15 @@ class MessagesController < ApplicationController
     end
 
     def edit
-        @message = Message.find(params[:id])
     end
     
     def update
-        if @message.update(message_params)
-            redirect_to message_path
-        else
-            render 'edit'
-        end
-    end
+		if @message.update(message_params)
+			redirect_to message_path
+		else
+			render 'edit'
+		end
+	end
 
     def destroy
         @message.destroy
